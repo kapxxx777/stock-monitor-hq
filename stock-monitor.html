@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股票异动监控看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --red: #f85149;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --orange: #db6d28;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --high-risk: #f85149;
+  --mid-risk: #d29922;
+  --low-risk: #3fb950;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, #161b22 0%, #1a1f2e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 30px;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.header h1 .badge {
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.header .meta {
+  color: var(--text2);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.summary-bar {
+  display: flex; gap: 15px;
+  padding: 15px 30px;
+  overflow-x: auto;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-card {
+  flex: 1;
+  min-width: 140px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.summary-card .label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+.summary-card .value { font-size: 20px; font-weight: 700; }
+.summary-card .sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+.container { padding: 20px 30px; }
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 25px 0 15px;
+  display: flex; align-items: center; gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.alert-banner {
+  background: linear-gradient(90deg, rgba(248,81,73,0.15) 0%, rgba(219,109,40,0.15) 100%);
+  border: 1px solid rgba(248,81,73,0.3);
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.alert-banner .icon { font-size: 18px; color: var(--red); }
+.alert-banner .content { font-size: 13px; line-height: 1.6; }
+.alert-banner strong { color: var(--red); }
+
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stock-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stock-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.stock-card .card-header {
+  padding: 14px 16px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border);
+}
+
+.stock-card .stock-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.stock-card .stock-code {
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.stock-card .risk-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.risk-high { background: rgba(248,81,73,0.2); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+.risk-mid { background: rgba(210,153,34,0.2); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+.risk-low { background: rgba(63,185,80,0.2); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+
+.stock-card .price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 16px;
+}
+
+.stock-card .price {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.stock-card .change {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.change-up { background: rgba(248,81,73,0.15); color: var(--red); }
+.change-down { background: rgba(63,185,80,0.15); color: var(--green); }
+
+.stock-card .indicators {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.stock-card .indicators .ind-item {
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.stock-card .indicators .ind-item:not(:nth-child(3n)) {
+  border-right: 1px solid var(--border);
+}
+
+.ind-item .ind-label { color: var(--text2); font-size: 10px; }
+.ind-item .ind-value { font-weight: 600; margin-top: 2px; }
+
+.stock-card .risk-factors {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.stock-card .risk-factors .rf-title {
+  color: var(--text2);
+  font-size: 10px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stock-card .risk-factors .rf-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rf-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(248,81,73,0.1);
+  color: var(--red);
+  border: 1px solid rgba(248,81,73,0.2);
+}
+
+.rf-tag.warn {
+  background: rgba(210,153,34,0.1);
+  color: var(--yellow);
+  border-color: rgba(210,153,34,0.2);
+}
+
+.rf-tag.info {
+  background: rgba(88,166,255,0.1);
+  color: var(--blue);
+  border-color: rgba(88,166,255,0.2);
+}
+
+.money-flow-section {
+  margin-top: 25px;
+}
+
+.money-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.money-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.money-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.money-table tr:hover { background: rgba(88,166,255,0.05); }
+
+.flow-bar {
+  display: inline-block;
+  height: 8px;
+  border-radius: 4px;
+  min-width: 4px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.flow-out { background: var(--green); }
+.flow-in { background: var(--red); }
+
+.chart-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.risk-rank {
+  list-style: none;
+  padding: 0;
+}
+
+.risk-rank li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.risk-rank .rank-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+
+.rank-1 { background: rgba(248,81,73,0.3); color: var(--red); }
+.rank-2 { background: rgba(219,109,40,0.3); color: var(--orange); }
+.rank-3 { background: rgba(210,153,34,0.3); color: var(--yellow); }
+.rank-other { background: rgba(88,166,255,0.15); color: var(--blue); }
+
+.risk-rank .rank-info { flex: 1; }
+.risk-rank .rank-name { font-weight: 600; font-size: 14px; }
+.risk-rank .rank-desc { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.risk-rank .rank-score { font-size: 20px; font-weight: 700; }
+
+.footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--text2);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 30px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: var(--text);
+  border-bottom-color: var(--blue);
+}
+
+.tab-btn:hover { color: var(--text); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (max-width: 768px) {
+  .container { padding: 15px; }
+  .stock-grid { grid-template-columns: 1fr; }
+  .chart-row { grid-template-columns: 1fr; }
+  .summary-bar { flex-wrap: wrap; }
+  .summary-card { min-width: 100px; }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stock-card { animation: fadeIn 0.4s ease-out; }
+.stock-card:nth-child(2) { animation-delay: 0.05s; }
+.stock-card:nth-child(3) { animation-delay: 0.1s; }
+.stock-card:nth-child(4) { animation-delay: 0.15s; }
+.stock-card:nth-child(5) { animation-delay: 0.2s; }
+.stock-card:nth-child(6) { animation-delay: 0.25s; }
+.stock-card:nth-child(7) { animation-delay: 0.3s; }
+.stock-card:nth-child(8) { animation-delay: 0.35s; }
+.stock-card:nth-child(9) { animation-delay: 0.4s; }
+.stock-card:nth-child(10) { animation-delay: 0.45s; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>
+    📊 持仓股票异动监控看板
+    <span class="badge">实时监控</span>
+  </h1>
+  <div class="meta">数据更新时间：2026年4月3日 | 监控股票：10只 | 风险评估基于公开数据</div>
+</div>
+
+<div class="summary-bar" id="summaryBar">
+  <!-- 动态填充 -->
+</div>
+
+<div class="container">
+  <!-- 风险预警横幅 -->
+  <div class="alert-banner" id="alertBanner">
+    <div class="icon">⚠️</div>
+    <div class="content" id="alertContent"></div>
+  </div>
+
+  <!-- Tab 切换 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('overview')">综合概览</button>
+    <button class="tab-btn" onclick="switchTab('flow')">资金流向</button>
+    <button class="tab-btn" onclick="switchTab('risk')">风险排名</button>
+    <button class="tab-btn" onclick="switchTab('detail')">详细分析</button>
+  </div>
+
+  <!-- Tab 1: 综合概览 -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> 持仓概览</div>
+    <div class="stock-grid" id="stockGrid">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+
+  <!-- Tab 2: 资金流向 -->
+  <div class="tab-content" id="tab-flow">
+    <div class="chart-row">
+      <div class="chart-container">
+        <div class="section-title"><span class="dot" style="background:var(--red)"></span> 近期累计资金净流入（万元）</div>
+        <canvas id="moneyFlowChart" height="300"></canvas>
+      </div>
+      <div class="chart-container">
+        <div class="section-title"><span class="dot" style="background:var(--orange)"></span> 换手率对比（%）</div>
+        <canvas id="turnoverChart" height="300"></canvas>
+      </div>
+    </div>
+    <div class="money-flow-section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span> 资金流向明细</div>
+      <table class="money-table">
+        <thead>
+          <tr>
+            <th>股票</th>
+            <th>近7日累计净流入</th>
+            <th>流向判断</th>
+            <th>大单情况</th>
+            <th>风险提示</th>
+          </tr>
+        </thead>
+        <tbody id="moneyTableBody">
+          <!-- 动态填充 -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tab 3: 风险排名 -->
+  <div class="tab-content" id="tab-risk">
+    <div class="chart-row">
+      <div class="chart-container">
+        <div class="section-title"><span class="dot" style="background:var(--red)"></span> 风险评分排名（分数越高风险越大）</div>
+        <canvas id="riskChart" height="300"></canvas>
+      </div>
+      <div class="chart-container">
+        <div class="section-title"><span class="dot" style="background:var(--yellow)"></span> 市盈率(TTM)对比</div>
+        <canvas id="peChart" height="300"></canvas>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span> 风险综合排名</div>
+      <ul class="risk-rank" id="riskRank">
+        <!-- 动态填充 -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tab 4: 详细分析 -->
+  <div class="tab-content" id="tab-detail">
+    <div id="detailContent">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  本看板基于公开金融数据分析生成，仅供参考，不构成投资建议。<br>
+  数据来源：Tushare/WorkBuddy 金融数据接口 | 生成时间：2026-04-03
+</div>
+
+<script>
+// ===== 股票数据集 =====
+const stocks = [
+  {
+    code: "600893.SH", name: "航发动力", industry: "航空", area: "陕西",
+    market: "主板", actName: "中国航空发动机集团",
+    price: 49.80, pctChg: 1.55, turnover: 2.03, volume: 2754462,
+    peTTM: 209.27, pb: 3.30, totalMv: 13274659, dvTTM: 0.19,
+    eps: 0.27, roe: 1.83, roa: 1.17, debtRatio: 60.16, currentRatio: 1.12,
+    profitDedt: 68240,
+    netMoneyFlow: -64011, // 万元
+    forecast: "预减 -86.55%~-84.53%，净利润8000~9200万",
+    stHistory: "2004年撤销ST，无当前风险",
+    holderTrade: "无近期增减持",
+    unlockInfo: "无近期解禁",
+    tags: ["PE虚高", "业绩预减", "资金流出"],
+    riskScore: 62,
+    riskLevel: "high",
+    riskDesc: "业绩大幅预减(-85%)，PE超过200倍严重高估，资金持续流出6.4亿。航空发动机订单虽有保障，但短期盈利能力极弱。"
+  },
+  {
+    code: "603778.SH", name: "国晟科技", industry: "电气设备", area: "北京",
+    market: "主板", actName: "吴君",
+    price: 29.16, pctChg: 6.04, turnover: 23.97, volume: 4374626,
+    peTTM: null, pb: 26.23, totalMv: 1924683, dvTTM: null,
+    eps: -0.24, roe: -17.28, roa: -6.49, debtRatio: 64.20, currentRatio: 0.56,
+    profitDedt: -152310,
+    netMoneyFlow: -14054,
+    forecast: "续亏 -516%~-208%，净利润-65000~-32500万",
+    stHistory: "无ST记录，但持续亏损",
+    holderTrade: "无近期增减持",
+    unlockInfo: "无近期解禁",
+    tags: ["连续亏损", "换手率异常", "高振幅", "PB虚高", "流动比率极低"],
+    riskScore: 92,
+    riskLevel: "high",
+    riskDesc: "高度危险标的。公司持续大幅亏损(-1.5亿扣非净利)，ROE为-17%，PB高达26倍但亏损中，换手率24%极度投机。连续涨停后风险巨大，典型的题材炒作，基本面完全不支持当前股价。"
+  },
+  {
+    code: "600552.SH", name: "凯盛科技", industry: "元器件", area: "安徽",
+    market: "主板", actName: "国务院国资委",
+    price: 11.73, pctChg: -2.98, turnover: 2.08, volume: 232375,
+    peTTM: 86.11, pb: 2.61, totalMv: 1108024, dvTTM: 0.43,
+    eps: 0.12, roe: 2.72, roa: 2.31, debtRatio: 58.88, currentRatio: 1.18,
+    profitDedt: 360,
+    netMoneyFlow: -14122,
+    forecast: "预增 +25.91%~+81.42%，净利润13496~19446万",
+    stHistory: "2008年撤销*ST，无当前风险",
+    holderTrade: "无近期增减持",
+    unlockInfo: "无近期解禁",
+    tags: ["PE偏高", "资金流出", "业绩预增"],
+    riskScore: 35,
+    riskLevel: "mid",
+    riskDesc: "业绩预增，但PE偏高(86倍)，且资金持续流出。央企背景有一定安全边际。近期股价震荡，建议关注业绩兑现情况。"
+  },
+  {
+    code: "600131.SH", name: "国网信通", industry: "通信设备", area: "四川",
+    market: "主板", actName: "国务院国资委",
+    price: 17.91, pctChg: -3.61, turnover: 1.62, volume: 351068,
+    peTTM: 31.65, pb: 3.48, totalMv: 2146254, dvTTM: 1.24,
+    eps: 0.25, roe: 4.69, roa: 2.16, debtRatio: 48.82, currentRatio: 1.66,
+    profitDedt: 29308,
+    netMoneyFlow: -29838,
+    forecast: "无近期业绩预告",
+    stHistory: "2011年撤销*ST，无当前风险",
+    holderTrade: "无近期增减持",
+    unlockInfo: "无近期解禁",
+    tags: ["资金流出", "连续下跌"],
+    riskScore: 38,
+    riskLevel: "mid",
+    riskDesc: "央企控股的通信设备股，基本面相对稳健，股息率1.24%尚可。但近期连续下跌，资金大幅流出3亿。需关注下跌是否反映基本面变化。"
+  },
+  {
+    code: "000592.SZ", name: "平潭发展", industry: "林业", area: "福建",
+    market: "主板", actName: "刘平山",
+    price: 12.57, pctChg: 4.58, turnover: 26.01, volume: 6231982,
+    peTTM: null, pb: 12.66, totalMv: 2428249, dvTTM: null,
+    eps: 0.012, roe: 1.10, roa: 1.34, debtRatio: 43.45, currentRatio: 1.84,
+    profitDedt: 2166,
+    netMoneyFlow: -274926,
+    forecast: "续亏 -11.28%~+44.36%，净利润-13000~-6500万",
+    stHistory: "2009年撤销ST，历史有*ST记录",
+    holderTrade: "无近期增减持",
+    unlockInfo: "无近期解禁",
+    tags: ["连续亏损", "PE亏损", "换手率极端", "PB虚高", "资金大幅流出", "历史ST"],
+    riskScore: 88,
+    riskLevel: "high",
+    riskDesc: "严重风险。公司连年亏损，PE为负值无法计算，换手率26%极端投机。虽然叠加平潭封关运作概念近期大涨，但基本面极差(年亏超亿)，资金大幅流出27.5亿(主力在出货)。概念退潮后下跌风险极大。"
+  },
+  {
+    code: "002940.SZ", name: "昂利康", industry: "化学制药", area: "浙江",
+    market: "主板", actName: "方南平",
+    price: 36.49, pctChg: 4.62, turnover: 23.98, volume: 1597775,
+    peTTM: 68.10, pb: 4.68, totalMv: 736106, dvTTM: 0.60,
+    eps: 0.25, roe: 3.23, roa: 3.42, debtRatio: 42.00, currentRatio: 1.72,
+    profitDedt: 3992,
+    netMoneyFlow: -20727,
+    forecast: "预增 +36.93%~+71.78%，净利润11000~13800万",
+    stHistory: "无ST记录",
+    holderTrade: "无近期增减持",
+    unlockInfo: "无近期解禁",
+    tags: ["PE偏高", "换手率偏高", "资金流出", "业绩预增"],
+    riskScore: 42,
+    riskLevel: "mid",
+    riskDesc: "化学制药股，业绩预增37%~72%是亮点。但换手率24%偏高，短线投机氛围浓。PE 68倍仍偏高，资金持续流出2亿。需区分是业绩驱动还是短期炒作。"
+  },
+  {
+    code: "002716.SZ", name: "湖南白银", industry: "小金属", area: "湖南",
+    market: "主板", actName: "湖南省国资委",
+    price: 11.55, pctChg: -4.15, turnover: 6.88, volume: 1857845,
+    peTTM: 159.15, pb: 9.68, totalMv: 3260667, dvTTM: null,
+    eps: 0.046, roe: 5.05, roa: 4.08, debtRatio: 46.87, currentRatio: 1.19,
+    profitDedt: 7647,
+    netMoneyFlow: -63317,
+    forecast: "预增 +67.88%~+126.78%，净利润28500~38500万",
+    stHistory: "2021年撤销*ST(原ST金贵)，有ST历史",
+    holderTrade: "长城资产2026.3减持1032万股；郴州国资2026.2减持1556万股",
+    unlockInfo: "无近期解禁",
+    tags: ["PE极高", "股东减持", "资金流出", "ST历史", "业绩预增"],
+    riskScore: 65,
+    riskLevel: "high",
+    riskDesc: "有ST历史(*ST金贵→湖南白银)，股东持续减持(长城资产、郴州国资)，PE高达159倍。虽然业绩预增但白银价格波动大。资金大幅流出6.3亿，需高度警惕减持叠加出货风险。"
+  },
+  {
+    code: "002149.SZ", name: "西部材料", industry: "小金属", area: "陕西",
+    market: "主板", actName: "陕西省财政厅",
+    price: 49.15, pctChg: -1.82, turnover: 10.32, volume: 2506983,
+    peTTM: 269.05, pb: 8.37, totalMv: 2399573, dvTTM: 0.61,
+    eps: 0.28, roe: 4.70, roa: 3.03, debtRatio: 48.62, currentRatio: 1.44,
+    profitDedt: 9953,
+    netMoneyFlow: 179133,
+    forecast: "无近期业绩预告",
+    stHistory: "无ST记录",
+    holderTrade: "西安航天科技2026.1减持480万股",
+    unlockInfo: "无近期解禁",
+    tags: ["PE极高", "股东减持", "资金大幅流入"],
+    riskScore: 45,
+    riskLevel: "mid",
+    riskDesc: "稀有金属材料龙头，PE高达269倍。好消息是资金大幅净流入17.9亿（唯一净流入的股票）。但西安航天科技1月减持480万股，需注意后续减持压力。估值极高，需要业绩持续高增长来消化。"
+  },
+  {
+    code: "002202.SZ", name: "金风科技", industry: "电气设备", area: "新疆",
+    market: "主板", actName: "无实际控制人",
+    price: 24.01, pctChg: -5.55, turnover: 6.97, volume: 5765786,
+    peTTM: 36.55, pb: 2.34, totalMv: 10141317, dvTTM: 0.58,
+    eps: 0.41, roe: 4.72, roa: 1.96, debtRatio: 73.72, currentRatio: 1.04,
+    profitDedt: 177697,
+    netMoneyFlow: -395845,
+    forecast: "无近期业绩预告",
+    stHistory: "无ST记录",
+    holderTrade: "三峡能源2026.3减持677万股；新疆能源2026.2减持184万股",
+    unlockInfo: "无近期解禁",
+    tags: ["资金大幅流出", "连续大跌", "负债率过高", "股东减持", "无实控人"],
+    riskScore: 72,
+    riskLevel: "high",
+    riskDesc: "风电龙头近期遭遇重挫，连续大跌近15%。资金大幅流出39.6亿（最严重），三峡能源和新疆能源持续减持。资产负债率73.7%偏高，流动比率仅1.04接近警戒线。无实际控制人增加治理不确定性。行业周期下行压力明显。"
+  },
+  {
+    code: "002837.SZ", name: "英维克", industry: "专用机械", area: "深圳",
+    market: "主板", actName: "齐勇",
+    price: 82.77, pctChg: -5.06, turnover: 4.00, volume: 2852008,
+    peTTM: 161.99, pb: 24.40, totalMv: 8082953, dvTTM: 0.18,
+    eps: 0.48, roe: 13.37, roa: 7.52, debtRatio: 50.16, currentRatio: 1.76,
+    profitDedt: 33421,
+    netMoneyFlow: -141043,
+    forecast: "无近期业绩预告",
+    stHistory: "无ST记录",
+    holderTrade: "秉原旭投资2026.3减持204万股",
+    unlockInfo: "无近期解禁",
+    tags: ["PE极高", "PB极高", "资金大幅流出", "连续下跌", "股东减持"],
+    riskScore: 70,
+    riskLevel: "high",
+    riskDesc: "温控设备龙头，ROE 13.4%为组合中最高，基本面不差。但PE 162倍、PB 24倍估值极高，资金大幅流出14.1亿，连续下跌近12%。虽有AI算力散热概念支撑，但估值泡沫风险较大。"
+  }
+];
+
+// ===== 风险评分 =====
+const sortedByRisk = [...stocks].sort((a, b) => b.riskScore - a.riskScore);
+
+// ===== 渲染函数 =====
+function init() {
+  renderSummary();
+  renderAlertBanner();
+  renderStockGrid();
+  renderMoneyTable();
+  renderRiskRank();
+  renderDetail();
+  initCharts();
+}
+
+function renderSummary() {
+  const highRisk = stocks.filter(s => s.riskLevel === 'high').length;
+  const midRisk = stocks.filter(s => s.riskLevel === 'mid').length;
+  const totalFlow = stocks.reduce((sum, s) => sum + s.netMoneyFlow, 0);
+  const lossCount = stocks.filter(s => s.profitDedt < 0).length;
+  const decreaseCount = stocks.filter(s => s.forecast.includes('预减') || s.forecast.includes('续亏')).length;
+
+  document.getElementById('summaryBar').innerHTML = `
+    <div class="summary-card">
+      <div class="label">监控总数</div>
+      <div class="value">${stocks.length}</div>
+      <div class="sub">只股票</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">高风险</div>
+      <div class="value" style="color:var(--red)">${highRisk}</div>
+      <div class="sub">需要警惕</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">中等风险</div>
+      <div class="value" style="color:var(--yellow)">${midRisk}</div>
+      <div class="sub">需关注</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">累计资金净流出</div>
+      <div class="value" style="color:var(--green)">${(totalFlow/10000).toFixed(1)}亿</div>
+      <div class="sub">近7日</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">亏损公司</div>
+      <div class="value" style="color:${lossCount > 0 ? 'var(--red)' : 'var(--green)'}">${lossCount}</div>
+      <div class="sub">2024Q3扣非</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">业绩预减/续亏</div>
+      <div class="value" style="color:${decreaseCount > 0 ? 'var(--red)' : 'var(--green)'}">${decreaseCount}</div>
+      <div class="sub">需警惕</div>
+    </div>
+  `;
+}
+
+function renderAlertBanner() {
+  const alerts = [];
+  stocks.forEach(s => {
+    if (s.riskScore >= 85) {
+      alerts.push(`<strong>${s.name}(${s.code})</strong>：${s.riskDesc}`);
+    }
+  });
+  
+  document.getElementById('alertContent').innerHTML = `
+    <strong>🚨 紧急风险预警（${alerts.length}只）</strong><br>
+    ${alerts.join('<hr style="border-color:rgba(248,81,73,0.2);margin:8px 0">')}
+    <div style="margin-top:8px;color:var(--text2)">提示：以下${stocks.filter(s => s.riskScore >= 60).length}只股票风险评分≥60，建议重点关注并考虑减仓。</div>
+  `;
+}
+
+function renderStockGrid() {
+  const grid = document.getElementById('stockGrid');
+  grid.innerHTML = stocks.map(s => {
+    const riskClass = s.riskLevel === 'high' ? 'risk-high' : s.riskLevel === 'mid' ? 'risk-mid' : 'risk-low';
+    const riskLabel = s.riskLevel === 'high' ? '高风险' : s.riskLevel === 'mid' ? '中风险' : '低风险';
+    const chgClass = s.pctChg >= 0 ? 'change-up' : 'change-down';
+    const chgText = s.pctChg >= 0 ? `+${s.pctChg.toFixed(2)}%` : `${s.pctChg.toFixed(2)}%`;
+    const peText = s.peTTM ? s.peTTM.toFixed(1) : '亏损';
+    const flowColor = s.netMoneyFlow >= 0 ? 'var(--red)' : 'var(--green)';
+    const flowText = s.netMoneyFlow >= 0 ? `+${(s.netMoneyFlow/10000).toFixed(1)}亿` : `${(s.netMoneyFlow/10000).toFixed(1)}亿`;
+
+    return `
+      <div class="stock-card">
+        <div class="card-header">
+          <div>
+            <div class="stock-name">${s.name}</div>
+            <div class="stock-code">${s.code} · ${s.industry} · ${s.area}</div>
+          </div>
+          <span class="risk-badge ${riskClass}">${riskLabel} ${s.riskScore}分</span>
+        </div>
+        <div class="price-row">
+          <span class="price" style="color:${s.pctChg >= 0 ? 'var(--red)' : 'var(--green)'}">${s.price.toFixed(2)}</span>
+          <span class="change ${chgClass}">${chgText}</span>
+          <span style="font-size:12px;color:var(--text2);margin-left:auto">成交额 ${(s.volume/10000).toFixed(0)}万</span>
+        </div>
+        <div class="indicators">
+          <div class="ind-item">
+            <div class="ind-label">PE(TTM)</div>
+            <div class="ind-value" style="color:${s.peTTM > 100 ? 'var(--red)' : 'var(--text)'}">${peText}</div>
+          </div>
+          <div class="ind-item">
+            <div class="ind-label">PB</div>
+            <div class="ind-value" style="color:${s.pb > 10 ? 'var(--red)' : 'var(--text)'}">${s.pb.toFixed(2)}</div>
+          </div>
+          <div class="ind-item">
+            <div class="ind-label">换手率</div>
+            <div class="ind-value" style="color:${s.turnover > 10 ? 'var(--yellow)' : 'var(--text)'}">${s.turnover.toFixed(1)}%</div>
+          </div>
+          <div class="ind-item">
+            <div class="ind-label">ROE</div>
+            <div class="ind-value" style="color:${s.roe < 0 ? 'var(--red)' : 'var(--text)'}">${s.roe.toFixed(1)}%</div>
+          </div>
+          <div class="ind-item">
+            <div class="ind-label">负债率</div>
+            <div class="ind-value" style="color:${s.debtRatio > 70 ? 'var(--red)' : 'var(--text)'}">${s.debtRatio.toFixed(1)}%</div>
+          </div>
+          <div class="ind-item">
+            <div class="ind-label">资金流向</div>
+            <div class="ind-value" style="color:${flowColor}">${flowText}</div>
+          </div>
+        </div>
+        <div class="risk-factors">
+          <div class="rf-title">风险因素</div>
+          <div class="rf-list">
+            ${s.tags.map(t => {
+              const cls = t.includes('亏损') || t.includes('ST') || t.includes('大幅') || t.includes('极端') || t.includes('极高') || t.includes('异常') ? '' : t.includes('偏高') || t.includes('流出') || t.includes('减持') || t.includes('下跌') ? 'warn' : 'info';
+              return `<span class="rf-tag ${cls}">${t}</span>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderMoneyTable() {
+  const sorted = [...stocks].sort((a, b) => a.netMoneyFlow - b.netMoneyFlow);
+  const tbody = document.getElementById('moneyTableBody');
+  tbody.innerHTML = sorted.map(s => {
+    const flowText = Math.abs(s.netMoneyFlow) > 100000 ? `${(Math.abs(s.netMoneyFlow)/10000).toFixed(1)}亿` : `${Math.abs(s.netMoneyFlow).toFixed(0)}万`;
+    const flowDir = s.netMoneyFlow >= 0 ? '净流入' : '净流出';
+    const flowColor = s.netMoneyFlow >= 0 ? 'var(--red)' : 'var(--green)';
+    const barWidth = Math.min(Math.abs(s.netMoneyFlow) / 4000, 200);
+    const riskHints = [];
+    if (s.netMoneyFlow < -100000) riskHints.push('🔴 主力大幅出逃');
+    else if (s.netMoneyFlow < -30000) riskHints.push('🟡 资金持续流出');
+    else if (s.netMoneyFlow > 50000) riskHints.push('🟢 资金持续流入');
+
+    return `
+      <tr>
+        <td><strong>${s.name}</strong><br><span style="color:var(--text2);font-size:11px">${s.code}</span></td>
+        <td>
+          <span style="color:${flowColor};font-weight:600">${flowDir} ${flowText}</span>
+          <span class="flow-bar ${s.netMoneyFlow >= 0 ? 'flow-in' : 'flow-out'}" style="width:${barWidth}px"></span>
+        </td>
+        <td>${s.netMoneyFlow >= 0 ? '📈 主力积极' : s.netMoneyFlow < -50000 ? '📉 主力撤离' : '↔️ 资金平衡'}</td>
+        <td>${s.holderTrade.includes('减持') ? '⚠️ 有股东减持' : '—'}</td>
+        <td>${riskHints.join(' ')}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderRiskRank() {
+  const ul = document.getElementById('riskRank');
+  ul.innerHTML = sortedByRisk.map((s, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
+    const scoreColor = s.riskScore >= 70 ? 'var(--red)' : s.riskScore >= 50 ? 'var(--yellow)' : 'var(--green)';
+    return `
+      <li>
+        <div class="rank-num ${rankClass}">${i + 1}</div>
+        <div class="rank-info">
+          <div class="rank-name">${s.name} <span style="color:var(--text2);font-size:12px">${s.code}</span></div>
+          <div class="rank-desc">${s.tags.slice(0,3).join(' · ')}</div>
+        </div>
+        <div class="rank-score" style="color:${scoreColor}">${s.riskScore}</div>
+      </li>
+    `;
+  }).join('');
+}
+
+function renderDetail() {
+  const container = document.getElementById('detailContent');
+  container.innerHTML = sortedByRisk.map(s => {
+    const riskClass = s.riskLevel === 'high' ? 'risk-high' : s.riskLevel === 'mid' ? 'risk-mid' : 'risk-low';
+    const riskLabel = s.riskLevel === 'high' ? '高风险' : s.riskLevel === 'mid' ? '中风险' : '低风险';
+    const peText = s.peTTM ? s.peTTM.toFixed(1) : '亏损（无法计算）';
+    const mvText = s.totalMv >= 10000 ? `${(s.totalMv/10000).toFixed(0)}亿` : `${s.totalMv.toFixed(0)}万`;
+
+    return `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <span style="font-size:18px;font-weight:700">${s.name}</span>
+            <span style="color:var(--text2);margin-left:8px">${s.code}</span>
+            <span style="color:var(--text2);margin-left:8px">| ${s.industry} | ${s.area}</span>
+            <span style="color:var(--text2);margin-left:8px">| 实控人：${s.actName}</span>
+          </div>
+          <span class="risk-badge ${riskClass}">${riskLabel} ${s.riskScore}分</span>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px;font-size:13px">
+          <div><span style="color:var(--text2)">最新价：</span><strong style="color:${s.pctChg>=0?'var(--red)':'var(--green)'}">${s.price} (${s.pctChg>=0?'+':''}${s.pctChg}%)</strong></div>
+          <div><span style="color:var(--text2)">PE(TTM)：</span><strong>${peText}</strong></div>
+          <div><span style="color:var(--text2)">PB：</span><strong>${s.pb}</strong></div>
+          <div><span style="color:var(--text2)">ROE：</span><strong style="color:${s.roe<0?'var(--red)':'inherit'}">${s.roe}%</strong></div>
+          <div><span style="color:var(--text2)">负债率：</span><strong style="color:${s.debtRatio>70?'var(--red)':'inherit'}">${s.debtRatio}%</strong></div>
+          <div><span style="color:var(--text2)">流动比率：</span><strong style="color:${s.currentRatio<1?'var(--red)':'inherit'}">${s.currentRatio}</strong></div>
+          <div><span style="color:var(--text2)">市值：</span><strong>${mvText}</strong></div>
+          <div><span style="color:var(--text2)">股息率：</span><strong>${s.dvTTM || '无'}%</strong></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px;margin-bottom:12px">
+          <div style="background:var(--bg);padding:12px;border-radius:8px">
+            <div style="color:var(--text2);font-size:11px;margin-bottom:6px">📊 业绩预告</div>
+            <div>${s.forecast}</div>
+          </div>
+          <div style="background:var(--bg);padding:12px;border-radius:8px">
+            <div style="color:var(--text2);font-size:11px;margin-bottom:6px">💰 股东增减持</div>
+            <div>${s.holderTrade}</div>
+          </div>
+          <div style="background:var(--bg);padding:12px;border-radius:8px">
+            <div style="color:var(--text2);font-size:11px;margin-bottom:6px">🔓 限售解禁</div>
+            <div>${s.unlockInfo}</div>
+          </div>
+          <div style="background:var(--bg);padding:12px;border-radius:8px">
+            <div style="color:var(--text2);font-size:11px;margin-bottom:6px">📜 ST历史</div>
+            <div>${s.stHistory}</div>
+          </div>
+        </div>
+
+        <div style="background:${s.riskLevel === 'high' ? 'rgba(248,81,73,0.08)' : s.riskLevel === 'mid' ? 'rgba(210,153,34,0.08)' : 'rgba(63,185,80,0.08)'};padding:14px;border-radius:8px;border-left:3px solid ${s.riskLevel === 'high' ? 'var(--red)' : s.riskLevel === 'mid' ? 'var(--yellow)' : 'var(--green)'}">
+          <div style="font-weight:600;margin-bottom:6px">📌 风险评估意见</div>
+          <div style="font-size:13px;line-height:1.7">${s.riskDesc}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function initCharts() {
+  // 资金流向图
+  const flowSorted = [...stocks].sort((a, b) => a.netMoneyFlow - b.netMoneyFlow);
+  new Chart(document.getElementById('moneyFlowChart'), {
+    type: 'bar',
+    data: {
+      labels: flowSorted.map(s => s.name),
+      datasets: [{
+        data: flowSorted.map(s => s.netMoneyFlow / 10000),
+        backgroundColor: flowSorted.map(s => s.netMoneyFlow >= 0 ? 'rgba(248,81,73,0.7)' : 'rgba(63,185,80,0.7)'),
+        borderColor: flowSorted.map(s => s.netMoneyFlow >= 0 ? '#f85149' : '#3fb950'),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.x.toFixed(1)} 亿元`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '亿元', color: '#8b949e' },
+          grid: { color: 'rgba(48,54,61,0.5)' },
+          ticks: { color: '#8b949e' }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#e6edf3', font: { size: 12 } }
+        }
+      }
+    }
+  });
+
+  // 换手率图
+  const turnSorted = [...stocks].sort((a, b) => b.turnover - a.turnover);
+  new Chart(document.getElementById('turnoverChart'), {
+    type: 'bar',
+    data: {
+      labels: turnSorted.map(s => s.name),
+      datasets: [{
+        data: turnSorted.map(s => s.turnover),
+        backgroundColor: turnSorted.map(s => s.turnover > 15 ? 'rgba(248,81,73,0.7)' : s.turnover > 5 ? 'rgba(210,153,34,0.7)' : 'rgba(88,166,255,0.7)'),
+        borderWidth: 0,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `换手率 ${ctx.parsed.x.toFixed(1)}%`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '%', color: '#8b949e' },
+          grid: { color: 'rgba(48,54,61,0.5)' },
+          ticks: { color: '#8b949e' }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#e6edf3', font: { size: 12 } }
+        }
+      }
+    }
+  });
+
+  // 风险评分图
+  new Chart(document.getElementById('riskChart'), {
+    type: 'bar',
+    data: {
+      labels: sortedByRisk.map(s => s.name),
+      datasets: [{
+        data: sortedByRisk.map(s => s.riskScore),
+        backgroundColor: sortedByRisk.map(s => s.riskScore >= 70 ? 'rgba(248,81,73,0.7)' : s.riskScore >= 50 ? 'rgba(210,153,34,0.7)' : 'rgba(63,185,80,0.7)'),
+        borderWidth: 0,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#e6edf3', font: { size: 11 }, maxRotation: 45 }
+        },
+        y: {
+          max: 100,
+          title: { display: true, text: '风险评分', color: '#8b949e' },
+          grid: { color: 'rgba(48,54,61,0.5)' },
+          ticks: { color: '#8b949e' }
+        }
+      }
+    }
+  });
+
+  // PE图
+  const peData = stocks.map(s => ({ name: s.name, pe: s.peTTM || 0 }));
+  peData.sort((a, b) => b.pe - a.pe);
+  new Chart(document.getElementById('peChart'), {
+    type: 'bar',
+    data: {
+      labels: peData.map(d => d.name),
+      datasets: [{
+        data: peData.map(d => d.pe),
+        backgroundColor: peData.map(d => d.pe > 200 ? 'rgba(248,81,73,0.7)' : d.pe > 80 ? 'rgba(210,153,34,0.7)' : 'rgba(88,166,255,0.7)'),
+        borderWidth: 0,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#e6edf3', font: { size: 11 }, maxRotation: 45 }
+        },
+        y: {
+          title: { display: true, text: 'PE(TTM)', color: '#8b949e' },
+          grid: { color: 'rgba(48,54,61,0.5)' },
+          ticks: { color: '#8b949e' }
+        }
+      }
+    }
+  });
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
