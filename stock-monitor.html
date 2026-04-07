@@ -402,7 +402,7 @@ body {
     📊 持仓股票异动监控看板
     <span class="badge">实时监控</span>
   </h1>
-  <div class="meta">数据更新时间：2026年4月7日 14:13 | 监控股票：10只 | 风险评估基于公开数据 | ⚠️ 今日A股开盘受国际多重利空冲击，市场整体波动加剧</div>
+  <div class="meta">数据更新时间：2026年4月7日 14:44 | 监控股票：10只 | 风险评估基于公开数据 | ⚠️ 中东冲突升级+量化新规+关税战三重利空叠加，A股剧烈分化</div>
 </div>
 
 <div class="summary-bar" id="summaryBar">
@@ -505,7 +505,7 @@ body {
 
 <div class="footer">
   本看板基于公开金融数据分析生成，仅供参考，不构成投资建议。<br>
-  数据来源：WorkBuddy 金融数据接口 / 华尔街见闻 / 东方财富 / 新浪财经 | 生成时间：2026-04-07 14:13 | ⚠️ 今日A股受中东局势+量化新规+美联储预期多重因素影响
+  数据来源：腾讯财经API / 华尔街见闻 / 东方财富 | 生成时间：2026-04-07 14:44 | ⚠️ 今日A股受中东局势+量化新规+关税战+美联储预期多重因素影响
 </div>
 
 <script>
@@ -514,24 +514,24 @@ const stocks = [
   {
     code: "600893.SH", name: "航发动力", industry: "航空", area: "陕西",
     market: "主板", actName: "中国航空发动机集团",
-    price: 46.12, pctChg: -5.86, turnover: 1.56, volume: 1939000,
-    peTTM: 193.81, pb: 3.06, totalMv: 12293700, dvTTM: 0.19,
+    price: 46.20, pctChg: -5.70, turnover: 1.80, volume: 223000,
+    peTTM: 194.14, pb: 3.06, totalMv: 12293700, dvTTM: 0.19,
     eps: 0.27, roe: 1.83, roa: 1.17, debtRatio: 60.16, currentRatio: 1.12,
     profitDedt: 68240,
-    netMoneyFlow: -64011, // 万元（保持上期数据）
+    netMoneyFlow: -64011,
     forecast: "预减 -86.55%~-84.53%，净利润8000~9200万",
     stHistory: "2004年撤销ST，无当前风险",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["PE虚高", "业绩预减", "4月7日大跌-5.86%", "资金流出"],
+    tags: ["PE虚高", "业绩预减", "今日大跌-5.70%", "资金流出"],
     riskScore: 68,
     riskLevel: "high",
-    riskDesc: "4月7日受市场大跌影响下跌5.86%，累计回调明显。业绩大幅预减(-85%)，PE高达193倍严重高估，资金持续流出6.4亿。航空发动机订单虽有保障，但短期盈利能力极弱，估值压力较大。"
+    riskDesc: "今日下跌5.70%，振幅7.72%，开高走低。美伊冲突升级本应对军工有利，但整体市场恐慌情绪更甚。业绩大幅预减(-85%)，PE高达194倍严重高估。航空发动机订单虽有保障，但短期盈利能力极弱，估值压力较大。"
   },
   {
     code: "603778.SH", name: "国晟科技", industry: "电气设备", area: "北京",
     market: "主板", actName: "吴君",
-    price: 31.55, pctChg: 10.01, turnover: 14.82, volume: 2942000,
+    price: 31.55, pctChg: 10.01, turnover: 15.01, volume: 298000,
     peTTM: null, pb: 28.48, totalMv: 2082400, dvTTM: null,
     eps: -0.24, roe: -17.28, roa: -6.49, debtRatio: 64.20, currentRatio: 0.56,
     profitDedt: -152310,
@@ -540,15 +540,15 @@ const stocks = [
     stHistory: "无ST记录，但持续亏损",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["连续亏损", "4月7日涨停", "换手率异常", "高振幅", "PB虚高", "流动比率极低"],
+    tags: ["连续亏损", "今日涨停+10.01%", "换手率异常15%", "高振幅10%", "PB虚高", "流动比率极低"],
     riskScore: 95,
     riskLevel: "high",
-    riskDesc: "极度危险标的！大盘普跌背景下逆势涨停，纯属资金异动炒作。公司持续大幅亏损(-1.5亿扣非净利)，ROE为-17%，PB高达28倍但亏损中，流动比率仅0.56极度偏低。高位接盘者面临巨大回调风险，强烈建议规避。"
+    riskDesc: "极度危险标的！大盘普跌背景下逆势涨停(收盘31.55)，一开盘即一字板封死，振幅10.01%，全天成交29.8亿。公司持续大幅亏损(-1.5亿扣非净利)，ROE为-17%，PB高达28倍但亏损中，流动比率仅0.56极度偏低。高位接盘者面临巨大回调风险，强烈建议规避。"
   },
   {
     code: "600552.SH", name: "凯盛科技", industry: "元器件", area: "安徽",
     market: "主板", actName: "国务院国资委",
-    price: 10.45, pctChg: -10.05, turnover: 2.41, volume: 254936,
+    price: 12.42, pctChg: 5.97, turnover: 5.06, volume: 58400,
     peTTM: 77.3, pb: 2.47, totalMv: 988400, dvTTM: 0.43,
     eps: 0.12, roe: 2.72, roa: 2.31, debtRatio: 58.88, currentRatio: 1.18,
     profitDedt: 360,
@@ -557,15 +557,15 @@ const stocks = [
     stHistory: "2008年撤销*ST，无当前风险",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["4月7日跌停", "PE偏高", "资金流出", "连续下跌"],
-    riskScore: 55,
-    riskLevel: "high",
-    riskDesc: "4月7日跌停，连续下跌压力较大，主力资金净流出4080万。虽然业绩预增，但市场整体下行环境下股价承压。央企背景有一定安全边际，关注跌停后是否能企稳，若继续破位则需谨慎。"
+    tags: ["今日逆势大涨+5.97%", "PE偏高", "资金流出", "央企背景"],
+    riskScore: 45,
+    riskLevel: "mid",
+    riskDesc: "今日逆势大涨5.97%，高开高走，振幅5.97%。在整体市场恐慌环境下表现强势，或受益于关税战催化国产显示/玻璃材料替代逻辑。业绩预增26%~81%是核心支撑，国资委控股央企背景提供安全边际。成交5.84亿元较活跃，短线资金关注度高。"
   },
   {
     code: "600131.SH", name: "国网信通", industry: "通信设备", area: "四川",
     market: "主板", actName: "国务院国资委",
-    price: 17.77, pctChg: -1.39, turnover: 0.68, volume: 146000,
+    price: 17.78, pctChg: -1.33, turnover: 0.85, volume: 18200,
     peTTM: 32.79, pb: 3.42, totalMv: 2129500, dvTTM: 1.24,
     eps: 0.25, roe: 4.69, roa: 2.16, debtRatio: 48.82, currentRatio: 1.66,
     profitDedt: 29308,
@@ -574,15 +574,15 @@ const stocks = [
     stHistory: "2011年撤销*ST，无当前风险",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["资金流出", "连续下跌"],
+    tags: ["资金流出", "跌幅较小-1.33%", "央企防御"],
     riskScore: 38,
     riskLevel: "mid",
-    riskDesc: "央企控股的通信设备股，今日跌幅相对较小(-1.39%)，防御性较好。PE约33倍相对合理，股息率1.24%尚可。资金持续流出3亿，需关注下跌是否反映基本面变化。相对组合内其他股票，抗跌性较强。"
+    riskDesc: "央企控股通信设备股，今日仅下跌1.33%，振幅仅2.28%，为组合内最佳防御标的。PE约32倍相对合理，股息率1.24%尚可。换手率0.85%极低说明筹码锁定性好。资金持续流出3亿但跌幅有限，央企背景提供较强支撑。"
   },
   {
     code: "000592.SZ", name: "平潭发展", industry: "林业", area: "福建",
     market: "主板", actName: "刘平山",
-    price: 12.06, pctChg: 3.25, turnover: 11.78, volume: 2728000,
+    price: 12.03, pctChg: 3.00, turnover: 14.97, volume: 347100,
     peTTM: 559.48, pb: 12.15, totalMv: 2330000, dvTTM: null,
     eps: 0.012, roe: 1.10, roa: 1.34, debtRatio: 43.45, currentRatio: 1.84,
     profitDedt: 2166,
@@ -591,15 +591,15 @@ const stocks = [
     stHistory: "2009年撤销ST，历史有*ST记录",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["连续亏损", "PE极高", "大盘跌日逆势上涨", "换手率高", "PB虚高", "历史ST"],
+    tags: ["连续亏损", "PE极高", "今日逆势涨+3.00%", "换手率极高15%", "PB虚高", "历史ST"],
     riskScore: 88,
     riskLevel: "high",
-    riskDesc: "严重风险！大盘普跌日逆势上涨3.25%，高度可疑。PE高达559倍，基本面极差（续亏），历史有ST记录。资金累计大幅流出27.5亿，概念退潮风险极大。主力资金行为异常，高位接盘者面临极大亏损风险。"
+    riskDesc: "今日逆势大涨3.00%，但换手率高达14.97%，成交34.7亿元，资金博弈剧烈。PE高达559倍，基本面极差（续亏），历史有ST记录。资金累计大幅流出27.5亿，概念退潮风险极大。短期放量上涨但基本面无法支撑，高位接盘风险极大。"
   },
   {
     code: "002940.SZ", name: "昂利康", industry: "化学制药", area: "浙江",
     market: "主板", actName: "方南平",
-    price: 33.79, pctChg: 0.72, turnover: 12.10, volume: 744000,
+    price: 33.77, pctChg: 0.66, turnover: 13.29, volume: 81900,
     peTTM: 63.06, pb: 4.28, totalMv: 681600, dvTTM: 0.60,
     eps: 0.25, roe: 3.23, roa: 3.42, debtRatio: 42.00, currentRatio: 1.72,
     profitDedt: 3992,
@@ -608,16 +608,16 @@ const stocks = [
     stHistory: "无ST记录",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["PE偏高", "换手率偏高", "资金流出", "业绩预增", "大盘跌日抗跌"],
+    tags: ["PE偏高", "换手率偏高13%", "资金流出", "业绩预增", "振幅大9.39%"],
     riskScore: 42,
     riskLevel: "mid",
-    riskDesc: "大盘大跌日仅小幅上涨0.72%，抗跌性尚可。业绩预增37%~72%是核心亮点。但换手率12%偏高，PE 63倍估值不低，资金持续流出2亿。需区分是业绩驱动还是短期炒作。"
+    riskDesc: "今日微涨0.66%，但振幅达9.39%（最低31.61，最高34.76），盘中剧烈波动。业绩预增37%~72%是核心亮点。换手率13.29%偏高说明多空分歧大，PE 63倍估值不低。量价配合需观察，若能站稳33元以上则有望继续走强。"
   },
   {
     code: "002716.SZ", name: "湖南白银", industry: "小金属", area: "湖南",
     market: "主板", actName: "湖南省国资委",
-    price: 3.39, pctChg: -10.08, turnover: 3.15, volume: 8608000,
-    peTTM: null, pb: 2.25, totalMv: 957000, dvTTM: null,
+    price: 11.35, pctChg: 0.35, turnover: 3.23, volume: 85400,
+    peTTM: 156.39, pb: 2.25, totalMv: 957000, dvTTM: null,
     eps: 0.046, roe: 5.05, roa: 4.08, debtRatio: 46.87, currentRatio: 1.19,
     profitDedt: 7647,
     netMoneyFlow: -63317,
@@ -625,16 +625,16 @@ const stocks = [
     stHistory: "2021年撤销*ST(原ST金贵)，有ST历史",
     holderTrade: "长城资产2026.3减持1032万股；郴州国资2026.2减持1556万股",
     unlockInfo: "无近期解禁",
-    tags: ["4月7日跌停", "股东减持", "资金流出", "ST历史", "开盘即封跌停"],
-    riskScore: 78,
+    tags: ["股东减持", "资金流出", "ST历史", "今日逆势微涨", "白银价格波动"],
+    riskScore: 65,
     riskLevel: "high",
-    riskDesc: "4月7日开盘即封跌停，成交2.93亿元，全天跌停未打开。有ST历史（原*ST金贵），股东持续减持（长城资产、郴州国资）。虽然业绩预增但白银价格波动大，国际贸易摩擦进一步压制有色金属板块。需高度警惕。"
+    riskDesc: "今日微涨0.35%，振幅仅1.95%，较前期跌停走势已大幅企稳。有ST历史（原*ST金贵），股东持续减持（长城资产、郴州国资）。白银价格受中东局势支撑走强，业绩预增68%~127%是核心亮点。但PE高达156倍估值偏高，股东减持压力持续存在，需密切关注。"
   },
   {
     code: "002149.SZ", name: "西部材料", industry: "小金属", area: "陕西",
     market: "主板", actName: "陕西省财政厅",
-    price: 45.40, pctChg: -3.61, turnover: 10.01, volume: 2224000,
-    peTTM: 249.50, pb: 7.74, totalMv: 2210000, dvTTM: 0.61,
+    price: 45.40, pctChg: -3.61, turnover: 11.30, volume: 251200,
+    peTTM: 248.53, pb: 7.74, totalMv: 2210000, dvTTM: 0.61,
     eps: 0.28, roe: 4.70, roa: 3.03, debtRatio: 48.62, currentRatio: 1.44,
     profitDedt: 9953,
     netMoneyFlow: -82000,
@@ -642,16 +642,16 @@ const stocks = [
     stHistory: "无ST记录",
     holderTrade: "西安航天科技2026.1减持480万股",
     unlockInfo: "无近期解禁",
-    tags: ["PE极高", "股东减持", "4月7日大跌-3.61%"],
-    riskScore: 55,
+    tags: ["PE极高", "股东减持", "今日大跌-3.61%", "高换手11.3%"],
+    riskScore: 60,
     riskLevel: "high",
-    riskDesc: "4月7日下跌3.61%，受国际贸易摩擦影响，稀有金属板块普跌。PE高达249倍估值极高。西安航天科技1月减持480万股，减持压力持续。换手率10%偏高，短期波动较大，资金出逃明显。"
+    riskDesc: "今日下跌3.61%，振幅6.18%，高开低走。受国际贸易摩擦影响，稀有金属板块普跌。PE高达249倍估值极高。西安航天科技1月减持480万股，减持压力持续。换手率11.3%偏高，成交25.1亿元，资金博弈激烈。"
   },
   {
     code: "002202.SZ", name: "金风科技", industry: "电气设备", area: "新疆",
     market: "主板", actName: "无实际控制人",
-    price: 23.05, pctChg: -4.83, turnover: 4.99, volume: 3903000,
-    peTTM: 35.09, pb: 2.34, totalMv: 7752900, dvTTM: 0.58,
+    price: 22.85, pctChg: -5.66, turnover: 6.21, volume: 484600,
+    peTTM: 34.79, pb: 2.34, totalMv: 7752900, dvTTM: 0.58,
     eps: 0.41, roe: 4.72, roa: 1.96, debtRatio: 73.72, currentRatio: 1.04,
     profitDedt: 177697,
     netMoneyFlow: -395845,
@@ -659,16 +659,16 @@ const stocks = [
     stHistory: "无ST记录",
     holderTrade: "三峡能源2026.3减持677万股；新疆能源2026.2减持184万股",
     unlockInfo: "无近期解禁",
-    tags: ["资金大幅流出", "连续大跌", "负债率过高", "股东减持", "无实控人"],
-    riskScore: 72,
+    tags: ["资金大幅流出", "今日大跌-5.66%", "负债率过高73.7%", "股东减持", "无实控人"],
+    riskScore: 75,
     riskLevel: "high",
-    riskDesc: "风电龙头继续大跌，4月7日下跌4.83%，累计跌幅扩大。资金大幅流出39.6亿（最严重），三峡能源和新疆能源持续减持。资产负债率73.7%偏高，流动比率仅1.04接近警戒线。无实际控制人增加治理不确定性。行业周期下行压力明显。"
+    riskDesc: "风电龙头今日大跌5.66%，振幅4.17%，高开低走，成交48.5亿元。资金大幅流出39.6亿（最严重），三峡能源和新疆能源持续减持。资产负债率73.7%偏高，流动比率仅1.04接近警戒线。无实际控制人增加治理不确定性。行业周期下行压力明显，关税战进一步冲击风电设备出口预期。"
   },
   {
     code: "002837.SZ", name: "英维克", industry: "专用机械", area: "深圳",
     market: "主板", actName: "齐勇",
-    price: 85.16, pctChg: 1.83, turnover: 2.50, volume: 1817000,
-    peTTM: 166.67, pb: 25.10, totalMv: 8316300, dvTTM: 0.18,
+    price: 84.78, pctChg: 1.38, turnover: 2.90, volume: 210900,
+    peTTM: 165.92, pb: 25.10, totalMv: 8316300, dvTTM: 0.18,
     eps: 0.48, roe: 13.37, roa: 7.52, debtRatio: 50.16, currentRatio: 1.76,
     profitDedt: 33421,
     netMoneyFlow: -141043,
@@ -676,10 +676,10 @@ const stocks = [
     stHistory: "无ST记录",
     holderTrade: "秉原旭投资2026.3减持204万股",
     unlockInfo: "无近期解禁",
-    tags: ["PE极高", "PB极高", "资金大幅流出", "大盘跌日逆势上涨", "股东减持"],
-    riskScore: 68,
+    tags: ["PE极高", "PB极高", "资金大幅流出", "今日逆势涨+1.38%", "股东减持"],
+    riskScore: 65,
     riskLevel: "high",
-    riskDesc: "大盘大跌日逆势上涨1.83%，AI算力散热概念支撑。温控设备龙头，ROE 13.4%为组合中最高，基本面不差。但PE 167倍、PB 25倍估值极高，资金大幅流出14.1亿，股东秉原旭投资持续减持。估值泡沫风险较大，建议逢高减仓。"
+    riskDesc: "今日逆势上涨1.38%，盘中冲高至86.35后有所回落，振幅3.16%。AI算力散热概念支撑，GPT-6发布预期持续催化。温控设备龙头，ROE 13.4%为组合中最高。但PE 166倍、PB 25倍估值极高，资金大幅流出14.1亿，股东秉原旭投资持续减持。估值泡沫风险较大，建议逢高减仓。"
   }
 ];
 
@@ -773,10 +773,10 @@ const recommendedStocks = [
     catalysts: ["美伊冲突升级，军事需求骤增", "航空发动机100%国产化战略机遇", "关税战加速航发自主化进程", "国有控股央企，政策优先支持"],
     risk: "PE 193倍估值较高，业绩预减压制短期表现",
     sentiment: "强烈推荐逢低布局",
-    targetAction: "当前价46.12，建议在44-45元区间逢低分批建仓，长期持有",
+    targetAction: "当前价46.20，建议在44-45元区间逢低分批建仓，长期持有",
     score: 85,
-    priceNow: 46.12,
-    pctChg: -5.86,
+    priceNow: 46.20,
+    pctChg: -5.70,
     color: "var(--red)"
   },
   {
@@ -788,10 +788,10 @@ const recommendedStocks = [
     catalysts: ["业绩预增25%~81%，基本面向好", "关税战催化国产显示/玻璃材料替代", "国资委控股央企背景", "当前价格经历跌停，超跌反弹空间大"],
     risk: "近期连续下跌，市场情绪偏悲观",
     sentiment: "值得关注，跌停企稳后介入",
-    targetAction: "密切观察10.45附近能否企稳，若成交量萎缩后止跌可考虑介入",
-    score: 78,
-    priceNow: 10.45,
-    pctChg: -10.05,
+    targetAction: "今日已大涨5.97%至12.42，不宜追高，回调至12元以下可考虑介入",
+    score: 80,
+    priceNow: 12.42,
+    pctChg: 5.97,
     color: "var(--green)"
   },
   {
@@ -805,8 +805,8 @@ const recommendedStocks = [
     sentiment: "长期看好，但当前估值需谨慎",
     targetAction: "若出现超跌至80元以下，可小仓位布局AI主题机会",
     score: 72,
-    priceNow: 85.16,
-    pctChg: 1.83,
+    priceNow: 84.78,
+    pctChg: 1.38,
     color: "var(--red)"
   },
   {
@@ -820,8 +820,8 @@ const recommendedStocks = [
     sentiment: "市场不确定性高时的防御性配置",
     targetAction: "可作为组合的防御仓位，17.5元以下可持续持有",
     score: 68,
-    priceNow: 17.77,
-    pctChg: -1.39,
+    priceNow: 17.78,
+    pctChg: -1.33,
     color: "var(--green)"
   },
   {
@@ -835,8 +835,8 @@ const recommendedStocks = [
     sentiment: "基本面最强的持仓标的，建议继续持有",
     targetAction: "建议持有，业绩确认前不宜减仓，33元以下可适当加仓",
     score: 65,
-    priceNow: 33.79,
-    pctChg: 0.72,
+    priceNow: 33.77,
+    pctChg: 0.66,
     color: "var(--red)"
   }
 ];
@@ -898,7 +898,7 @@ function renderEvents() {
       </div>
     `}).join('')}
     <div style="text-align:center;color:var(--text2);font-size:11px;padding:15px 0">
-      数据来源：华尔街见闻、东方财富、新浪财经等主流财经媒体 | 更新时间：2026-04-07 14:13 | 以上内容仅供参考，不构成投资建议
+      数据来源：华尔街见闻、东方财富、腾讯财经等主流财经媒体 | 更新时间：2026-04-07 14:44 | 以上内容仅供参考，不构成投资建议
     </div>
   `;
 }
