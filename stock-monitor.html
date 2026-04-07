@@ -402,7 +402,7 @@ body {
     📊 持仓股票异动监控看板
     <span class="badge">实时监控</span>
   </h1>
-  <div class="meta">数据更新时间：2026年4月7日 | 监控股票：10只 | 风险评估基于公开数据 | 注：今日A股市场受国际贸易摩擦影响整体大幅下跌</div>
+  <div class="meta">数据更新时间：2026年4月7日 14:13 | 监控股票：10只 | 风险评估基于公开数据 | ⚠️ 今日A股开盘受国际多重利空冲击，市场整体波动加剧</div>
 </div>
 
 <div class="summary-bar" id="summaryBar">
@@ -422,6 +422,8 @@ body {
     <button class="tab-btn" onclick="switchTab('flow')">资金流向</button>
     <button class="tab-btn" onclick="switchTab('risk')">风险排名</button>
     <button class="tab-btn" onclick="switchTab('detail')">详细分析</button>
+    <button class="tab-btn" onclick="switchTab('events')" style="color:var(--yellow)">🔥 24H大事件</button>
+    <button class="tab-btn" onclick="switchTab('recommend')" style="color:var(--green)">💡 推荐股票</button>
   </div>
 
   <!-- Tab 1: 综合概览 -->
@@ -489,11 +491,21 @@ body {
       <!-- 动态填充 -->
     </div>
   </div>
+
+  <!-- Tab 5: 24H大事件 -->
+  <div class="tab-content" id="tab-events">
+    <div id="eventsContent"></div>
+  </div>
+
+  <!-- Tab 6: 推荐股票 -->
+  <div class="tab-content" id="tab-recommend">
+    <div id="recommendContent"></div>
+  </div>
 </div>
 
 <div class="footer">
   本看板基于公开金融数据分析生成，仅供参考，不构成投资建议。<br>
-  数据来源：WorkBuddy 金融数据接口 / 公开财经网站 | 生成时间：2026-04-07 | 注：今日A股受国际贸易摩擦影响大幅下挫
+  数据来源：WorkBuddy 金融数据接口 / 华尔街见闻 / 东方财富 / 新浪财经 | 生成时间：2026-04-07 14:13 | ⚠️ 今日A股受中东局势+量化新规+美联储预期多重因素影响
 </div>
 
 <script>
@@ -674,6 +686,161 @@ const stocks = [
 // ===== 风险评分 =====
 const sortedByRisk = [...stocks].sort((a, b) => b.riskScore - a.riskScore);
 
+// ===== 近24小时大事件数据 =====
+const bigEvents = [
+  {
+    time: "2026-04-06 07:01",
+    level: "danger",
+    icon: "💣",
+    title: "美伊军事冲突升级：特朗普威胁袭击伊朗核设施",
+    summary: "特朗普向伊朗发出48小时最后通牒，要求开放霍尔木兹海峡，并扬言"4月7日将是伊朗的发电厂日和大桥日"。美以已对伊朗布什尔核电站和马赫沙赫尔石化区实施空袭。美军运输机与伊方交火，中东局势骤然紧张。",
+    impact: "📈 利好：军工国防、能源（石油/天然气）、黄金避险资产、储能板块\n📉 利空：航空、旅游、消费电子（供应链风险）、全球贸易相关",
+    analysis: "霍尔木兹海峡是全球20%石油过境通道，若封锁或冲突升级，国际油价可能短期突破$130/桶。A股方面军工板块将获得情绪提振，航发动力（600893）所在的航空发动机产业链或受益于军事需求扩张。WTI原油亚市已涨超3%至$115/桶，有色金属、黄金期货同步走强。风险偏好整体受压，外资北向资金流出概率加大。"
+  },
+  {
+    time: "2026-04-07 00:00",
+    level: "danger",
+    icon: "🚨",
+    title: "史上最严量化交易新规正式生效：穿透式短线交易监管落地",
+    summary: "证监会《关于短线交易监管的若干规定》与沪深北三大交易所新版程序化交易细则于4月7日正式实施。核心：同一实际控制人控制的所有关联账户合并计算持股，合并后持股超5%纳入短线交易监管，彻底堵住分仓规避漏洞。",
+    impact: "📈 利好：价值蓝筹股（量化做多大盘）、中长期投资者、市场公平性\n📉 利空：高频量化机构（资金出逃）、小盘股（量化偏爱小盘）、短期成交量萎缩",
+    analysis: "新规打压高频量化对散户的"速度收割"，有利于价值投资生态。短期成交量将有所萎缩，小盘股可能承压（量化清仓小盘仓位）。但持仓较分散的机构可能借此调整仓位结构，转向蓝筹白马。对本监控组合中的金风科技（002202）、英维克（002837）等大市值标的影响相对中性。"
+  },
+  {
+    time: "2026-04-06 18:00",
+    level: "warning",
+    icon: "⚡",
+    title: "美国非农超预期强劲：3月新增就业17.8万，降息预期大幅推迟",
+    summary: "美国3月非农就业新增17.8万人，创一年新高，失业率降至4.3%。但服务业PMI跌至49.8，首次进入萎缩区间。数据强劲压低Fed降息预期，2年期美债收益率升6BP至3.86%，美元突破100关口。",
+    impact: "📈 利好：人民币相对贬值或加剧出口股竞争优势，黄金短期承压后或反弹\n📉 利空：全球资金回流美元资产，A股北向资金净流出概率上升，高估值成长股承压",
+    analysis: "美联储降息预期推迟意味着全球流动性紧缩持续，美元走强将抑制外资流入A股。人民币若继续承压，有利于出口导向型企业，但会加大进口成本（如能源、大宗商品企业）。对组合内的航发动力（高估值军工）和英维克（高PE科技）形成估值压力。"
+  },
+  {
+    time: "2026-04-07 09:30",
+    level: "danger",
+    icon: "📉",
+    title: "清明节后A股开盘：受多重利空冲击，市场整体承压",
+    summary: "节前（4月3日）沪指已失守3900点。节后首个交易日（4月7日），外围多重利空叠加：中东局势骤变、量化新规冲击、美元走强等。港股延续清明假期休市至8日，北向资金缺席，A股流动性受限。",
+    impact: "📈 利好：农业（粮食安全）、军工国防、内需消费（政策托底）、红利高股息板块\n📉 利空：外向型制造业、消费电子、高估值成长股、有色金属（中美贸易摩擦）",
+    analysis: "历史上节后第一个交易日若遇到外部重大利空，往往呈现快速杀跌后企稳的走势。汇金等国家队可能在关键点位护盘（前期已多次增持ETF）。建议关注沪指3880点支撑，若跌破需警惕进一步下探3800点一线。"
+  },
+  {
+    time: "2026-04-06 20:00",
+    level: "warning",
+    icon: "🛢️",
+    title: "OPEC+计划小幅增产，但中东战事阻碍供应落地",
+    summary: "OPEC+拟象征性增产20.6万桶/日，但霍尔木兹海峡通行量升至战事以来新高，伊拉克获豁免，实际供应前景存疑。WTI原油亚市早盘涨超3%至$115/桶以上。",
+    impact: "📈 利好：石油能源股、煤炭、天然气\n📉 利空：航空、交运、化工下游（原料成本上升）",
+    analysis: "油价上涨将直接推升国内通胀预期，给CPI带来输入性压力。对持仓组合影响：昂利康（002940）所在的化学制药行业若原材料成本上升，利润空间将受到挤压，但公司业绩预增支撑仍在。"
+  },
+  {
+    time: "2026-04-06 08:00",
+    level: "info",
+    icon: "🤖",
+    title: "AI技术新进展：GPT-6传闻4月14日发布，性能提升40%",
+    summary: "市场传言OpenAI将于4月14日发布GPT-6，性能较前代提升40%，上下文窗口扩展至200万Token。微软、谷歌同时争相与SK海力士签署长期DRAM供应协议，三星Q2 DRAM价格再涨30%。",
+    impact: "📈 利好：AI算力概念（英伟达、算力基础设施、温控设备）、AI应用软件\n📉 利空：传统软件、部分替代性岗位相关业务",
+    analysis: "AI技术加速迭代利好温控/散热设备龙头英维克（002837），该公司数据中心液冷业务持续扩张。DRAM价格上涨对凯盛科技（600552）的电子元器件业务有边际正面影响。但短期内AI板块估值已相当高（英维克PE 167倍），需警惕高位风险。"
+  },
+  {
+    time: "2026-04-01 09:30",
+    level: "info",
+    icon: "🏦",
+    title: "央行重磅发声：继续实施适度宽松货币政策，促进经济稳定增长",
+    summary: "央行货币政策委员会召开2026年第一季度例会，明确表示将继续实施适度宽松的货币政策，促进经济稳定增长和物价合理回升，为资本市场提供稳定的流动性环境。",
+    impact: "📈 利好：整体A股流动性，银行、房地产（融资成本下降）、高负债企业（债务压力减轻）\n📉 利空：通胀预期若未受控，可能影响债券市场",
+    analysis: "央行宽松信号明确，为A股提供政策底部支撑。结合此前"国家队"汇金增持ETF信号，政策面对市场有托底意愿。但宏观政策效果传导至微观企业盈利需时间。短期内对组合内的高债务比率股票（如金风科技负债率73.7%）有减压作用。"
+  },
+  {
+    time: "2026-04-05 00:01",
+    level: "warning",
+    icon: "🌍",
+    title: "美国对等关税全面生效：全球贸易体系面临重构",
+    summary: "美国对等关税政策正式对全球所有贸易伙伴生效，对中国加征更高关税（对等关税叠加现有关税）。全球金融市场剧烈震荡，多国宣布反制措施。中国商务部表示将采取"坚决有力措施"维护正当权益。",
+    impact: "📈 利好：内需消费（减少进口依赖）、进口替代（半导体、航空航天）、农业（粮食安全）\n📉 利空：外向型制造业、消费电子（苹果供应链）、有色金属（国际大宗商品）",
+    analysis: "关税战对A股的长期影响是加速产业链自主化，利好航发动力（600893）所在的航空发动机国产化，以及凯盛科技（600552）的国产玻璃/显示材料替代。但短期内外部不确定性大幅提升风险溢价，外向型企业受冲击明显。历史经验看，类似事件往往在市场超跌后出现反弹机会。"
+  }
+];
+
+// ===== 基于投资习惯的推荐股票 =====
+const recommendedStocks = [
+  {
+    rank: 1,
+    code: "600893.SH",
+    name: "航发动力",
+    industry: "航空航天 / 军工",
+    reason: "国之重器，战略价值最高",
+    catalysts: ["美伊冲突升级，军事需求骤增", "航空发动机100%国产化战略机遇", "关税战加速航发自主化进程", "国有控股央企，政策优先支持"],
+    risk: "PE 193倍估值较高，业绩预减压制短期表现",
+    sentiment: "强烈推荐逢低布局",
+    targetAction: "当前价46.12，建议在44-45元区间逢低分批建仓，长期持有",
+    score: 85,
+    priceNow: 46.12,
+    pctChg: -5.86,
+    color: "var(--red)"
+  },
+  {
+    rank: 2,
+    code: "600552.SH",
+    name: "凯盛科技",
+    industry: "电子材料 / 进口替代",
+    reason: "国产替代核心标的，业绩预增有支撑",
+    catalysts: ["业绩预增25%~81%，基本面向好", "关税战催化国产显示/玻璃材料替代", "国资委控股央企背景", "当前价格经历跌停，超跌反弹空间大"],
+    risk: "近期连续下跌，市场情绪偏悲观",
+    sentiment: "值得关注，跌停企稳后介入",
+    targetAction: "密切观察10.45附近能否企稳，若成交量萎缩后止跌可考虑介入",
+    score: 78,
+    priceNow: 10.45,
+    pctChg: -10.05,
+    color: "var(--green)"
+  },
+  {
+    rank: 3,
+    code: "002837.SZ",
+    name: "英维克",
+    industry: "温控设备 / AI算力基础设施",
+    reason: "AI浪潮下数据中心温控龙头，成长确定性强",
+    catalysts: ["GPT-6发布在即，AI算力需求爆发", "数据中心液冷市场快速扩张", "ROE 13.4%为组合最高，盈利能力强", "大盘跌日逆势上涨，市场认可度高"],
+    risk: "PE 167倍、PB 25倍估值极高，股东持续减持",
+    sentiment: "长期看好，但当前估值需谨慎",
+    targetAction: "若出现超跌至80元以下，可小仓位布局AI主题机会",
+    score: 72,
+    priceNow: 85.16,
+    pctChg: 1.83,
+    color: "var(--red)"
+  },
+  {
+    rank: 4,
+    code: "600131.SH",
+    name: "国网信通",
+    industry: "通信设备 / 电力信息化",
+    reason: "组合内最佳防御标的，估值合理有股息",
+    catalysts: ["PE 32倍相对合理，股息率1.24%", "国有控股最抗跌，今日跌幅最小(-1.39%)", "电力信息化受益于新型电力系统建设", "央企背景叠加宽松货币政策降低融资成本"],
+    risk: "资金持续流出，成长性相对偏弱",
+    sentiment: "市场不确定性高时的防御性配置",
+    targetAction: "可作为组合的防御仓位，17.5元以下可持续持有",
+    score: 68,
+    priceNow: 17.77,
+    pctChg: -1.39,
+    color: "var(--green)"
+  },
+  {
+    rank: 5,
+    code: "002940.SZ",
+    name: "昂利康",
+    industry: "化学制药",
+    reason: "业绩预增确定性最强，大盘跌日抗跌表现优异",
+    catalysts: ["业绩预增37%~72%，基本面最佳", "大盘大跌日逆势上涨0.72%，抗跌性强", "无ST历史，财务结构相对健康", "中小市值药企，量化新规后受影响小"],
+    risk: "PE 63倍偏高，换手率较大，资金持续流出",
+    sentiment: "基本面最强的持仓标的，建议继续持有",
+    targetAction: "建议持有，业绩确认前不宜减仓，33元以下可适当加仓",
+    score: 65,
+    priceNow: 33.79,
+    pctChg: 0.72,
+    color: "var(--red)"
+  }
+];
+
 // ===== 渲染函数 =====
 function init() {
   renderSummary();
@@ -682,7 +849,120 @@ function init() {
   renderMoneyTable();
   renderRiskRank();
   renderDetail();
+  renderEvents();
+  renderRecommend();
   initCharts();
+}
+
+function renderEvents() {
+  const container = document.getElementById('eventsContent');
+  
+  const levelMap = {
+    danger: { bg: 'rgba(248,81,73,0.08)', border: 'var(--red)', badge: 'rgba(248,81,73,0.2)', color: 'var(--red)', label: '🚨 重大风险' },
+    warning: { bg: 'rgba(210,153,34,0.08)', border: 'var(--yellow)', badge: 'rgba(210,153,34,0.2)', color: 'var(--yellow)', label: '⚠️ 需关注' },
+    info: { bg: 'rgba(88,166,255,0.06)', border: 'var(--blue)', badge: 'rgba(88,166,255,0.15)', color: 'var(--blue)', label: '💡 参考信息' }
+  };
+
+  container.innerHTML = `
+    <div class="section-title"><span class="dot" style="background:var(--yellow)"></span> 近24小时重大市场事件（2026年4月6日-7日）</div>
+    <div style="background:rgba(248,81,73,0.06);border:1px solid rgba(248,81,73,0.2);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.8">
+      <strong style="color:var(--red)">📊 综合市场判断：</strong> 
+      当前A股面临多重压力：①中东军事冲突升级推升避险情绪；②量化新规冲击高频交易；③美联储降息预期推迟压制估值；④关税战持续扰动外向型企业。
+      但国内政策托底（央行宽松+汇金护盘）提供支撑。短期以防御为主，关注军工/内需/红利；中期待情绪稳定后布局进口替代方向。
+    </div>
+    ${bigEvents.map(ev => {
+      const lv = levelMap[ev.level];
+      return `
+      <div style="background:${lv.bg};border:1px solid rgba(128,128,128,0.15);border-left:3px solid ${lv.border};border-radius:8px;padding:18px 20px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:20px">${ev.icon}</span>
+            <div>
+              <div style="font-size:15px;font-weight:700;line-height:1.3">${ev.title}</div>
+              <div style="font-size:11px;color:var(--text2);margin-top:3px">${ev.time}</div>
+            </div>
+          </div>
+          <span style="background:${lv.badge};color:${lv.color};font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;white-space:nowrap;margin-left:10px">${lv.label}</span>
+        </div>
+        <div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px">${ev.summary}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+          <div style="background:rgba(0,0,0,0.2);padding:10px 12px;border-radius:6px">
+            <div style="color:var(--text2);font-size:10px;margin-bottom:5px">📈📉 市场影响方向</div>
+            <div style="white-space:pre-line;line-height:1.8">${ev.impact}</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.2);padding:10px 12px;border-radius:6px">
+            <div style="color:var(--text2);font-size:10px;margin-bottom:5px">🔍 深度分析（结合持仓）</div>
+            <div style="line-height:1.7">${ev.analysis}</div>
+          </div>
+        </div>
+      </div>
+    `}).join('')}
+    <div style="text-align:center;color:var(--text2);font-size:11px;padding:15px 0">
+      数据来源：华尔街见闻、东方财富、新浪财经等主流财经媒体 | 更新时间：2026-04-07 14:13 | 以上内容仅供参考，不构成投资建议
+    </div>
+  `;
+}
+
+function renderRecommend() {
+  const container = document.getElementById('recommendContent');
+  
+  container.innerHTML = `
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> 基于投资习惯的推荐股票（5只）</div>
+    <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.8">
+      <strong style="color:var(--green)">💡 筛选逻辑：</strong> 
+      根据您的持仓习惯分析：①偏好大主题（军工/科技/内需）；②关注国资背景和政策支持；③兼顾基本面与事件催化；④市场利空环境下优先防御性+超跌反弹机会。
+      以下5只股票综合考虑<strong>当前宏观环境、事件催化、基本面支撑</strong>三个维度进行推荐，由强到弱排序。
+    </div>
+    ${recommendedStocks.map((s, i) => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px;transition:transform 0.2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:42px;height:42px;border-radius:50%;background:${i===0?'rgba(248,81,73,0.2)':i===1?'rgba(219,109,40,0.2)':i===2?'rgba(210,153,34,0.2)':i===3?'rgba(88,166,255,0.15)':'rgba(63,185,80,0.15)'};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:${i===0?'var(--red)':i===1?'var(--orange)':i===2?'var(--yellow)':i===3?'var(--blue)':'var(--green)'}">
+              ${i+1}
+            </div>
+            <div>
+              <div style="font-size:17px;font-weight:700">${s.name} <span style="color:var(--text2);font-size:13px;font-weight:400">${s.code}</span></div>
+              <div style="font-size:12px;color:var(--text2);margin-top:2px">${s.industry}</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:20px;font-weight:700;color:${s.color}">${s.priceNow.toFixed(2)}</div>
+            <div style="font-size:12px;background:${s.pctChg>=0?'rgba(248,81,73,0.15)':'rgba(63,185,80,0.15)'};color:${s.color};padding:2px 8px;border-radius:4px;margin-top:3px">${s.pctChg>=0?'+':''}${s.pctChg.toFixed(2)}%</div>
+          </div>
+        </div>
+        
+        <div style="background:rgba(63,185,80,0.06);border-left:3px solid var(--green);padding:10px 14px;border-radius:4px;margin-bottom:12px;font-size:13px">
+          <strong style="color:var(--green)">推荐理由：</strong>${s.reason}
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;margin-bottom:12px">
+          <div style="background:var(--bg);padding:12px;border-radius:8px">
+            <div style="color:var(--text2);font-size:10px;margin-bottom:7px">🚀 核心催化因素</div>
+            ${s.catalysts.map(c => `<div style="padding:3px 0;border-bottom:1px solid rgba(48,54,61,0.5);line-height:1.5">✅ ${c}</div>`).join('')}
+          </div>
+          <div style="background:var(--bg);padding:12px;border-radius:8px">
+            <div style="color:var(--text2);font-size:10px;margin-bottom:7px">⚠️ 主要风险</div>
+            <div style="color:var(--yellow);line-height:1.6;margin-bottom:10px">${s.risk}</div>
+            <div style="color:var(--text2);font-size:10px;margin-bottom:5px">📋 操作建议</div>
+            <div style="color:var(--blue);line-height:1.6">${s.targetAction}</div>
+          </div>
+        </div>
+        
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+          <div style="color:var(--text2)">综合推荐评分：
+            <span style="color:${s.score>=80?'var(--red)':s.score>=70?'var(--yellow)':'var(--green)'};font-weight:700;font-size:16px">${s.score}</span>/100
+          </div>
+          <div style="background:rgba(63,185,80,0.15);color:var(--green);padding:4px 14px;border-radius:20px;font-weight:600">${s.sentiment}</div>
+        </div>
+      </div>
+    `).join('')}
+    
+    <div style="background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.15);border-radius:8px;padding:16px 20px;margin-top:10px;font-size:12px;color:var(--text2);line-height:1.8">
+      <strong style="color:var(--blue)">⚠️ 重要声明：</strong> 以上推荐基于公开数据分析和当前市场环境，仅代表AI分析视角，<strong>不构成任何投资建议</strong>。
+      股市有风险，投资需谨慎。请结合自身风险承受能力、资金状况和投资目标做出独立判断。
+      过去表现不代表未来收益，外部宏观环境变化可能导致分析失效。
+    </div>
+  `;
 }
 
 function renderSummary() {
