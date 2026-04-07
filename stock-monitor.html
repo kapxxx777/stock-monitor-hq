@@ -402,7 +402,7 @@ body {
     📊 持仓股票异动监控看板
     <span class="badge">实时监控</span>
   </h1>
-  <div class="meta">数据更新时间：2026年4月3日 | 监控股票：10只 | 风险评估基于公开数据</div>
+  <div class="meta">数据更新时间：2026年4月7日 | 监控股票：10只 | 风险评估基于公开数据 | 注：今日A股市场受国际贸易摩擦影响整体大幅下跌</div>
 </div>
 
 <div class="summary-bar" id="summaryBar">
@@ -493,7 +493,7 @@ body {
 
 <div class="footer">
   本看板基于公开金融数据分析生成，仅供参考，不构成投资建议。<br>
-  数据来源：Tushare/WorkBuddy 金融数据接口 | 生成时间：2026-04-03
+  数据来源：WorkBuddy 金融数据接口 / 公开财经网站 | 生成时间：2026-04-07 | 注：今日A股受国际贸易摩擦影响大幅下挫
 </div>
 
 <script>
@@ -502,25 +502,25 @@ const stocks = [
   {
     code: "600893.SH", name: "航发动力", industry: "航空", area: "陕西",
     market: "主板", actName: "中国航空发动机集团",
-    price: 49.80, pctChg: 1.55, turnover: 2.03, volume: 2754462,
-    peTTM: 209.27, pb: 3.30, totalMv: 13274659, dvTTM: 0.19,
+    price: 46.12, pctChg: -5.86, turnover: 1.56, volume: 1939000,
+    peTTM: 193.81, pb: 3.06, totalMv: 12293700, dvTTM: 0.19,
     eps: 0.27, roe: 1.83, roa: 1.17, debtRatio: 60.16, currentRatio: 1.12,
     profitDedt: 68240,
-    netMoneyFlow: -64011, // 万元
+    netMoneyFlow: -64011, // 万元（保持上期数据）
     forecast: "预减 -86.55%~-84.53%，净利润8000~9200万",
     stHistory: "2004年撤销ST，无当前风险",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["PE虚高", "业绩预减", "资金流出"],
-    riskScore: 62,
+    tags: ["PE虚高", "业绩预减", "4月7日大跌-5.86%", "资金流出"],
+    riskScore: 68,
     riskLevel: "high",
-    riskDesc: "业绩大幅预减(-85%)，PE超过200倍严重高估，资金持续流出6.4亿。航空发动机订单虽有保障，但短期盈利能力极弱。"
+    riskDesc: "4月7日受市场大跌影响下跌5.86%，累计回调明显。业绩大幅预减(-85%)，PE高达193倍严重高估，资金持续流出6.4亿。航空发动机订单虽有保障，但短期盈利能力极弱，估值压力较大。"
   },
   {
     code: "603778.SH", name: "国晟科技", industry: "电气设备", area: "北京",
     market: "主板", actName: "吴君",
-    price: 29.16, pctChg: 6.04, turnover: 23.97, volume: 4374626,
-    peTTM: null, pb: 26.23, totalMv: 1924683, dvTTM: null,
+    price: 31.55, pctChg: 10.01, turnover: 14.82, volume: 2942000,
+    peTTM: null, pb: 28.48, totalMv: 2082400, dvTTM: null,
     eps: -0.24, roe: -17.28, roa: -6.49, debtRatio: 64.20, currentRatio: 0.56,
     profitDedt: -152310,
     netMoneyFlow: -14054,
@@ -528,33 +528,33 @@ const stocks = [
     stHistory: "无ST记录，但持续亏损",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["连续亏损", "换手率异常", "高振幅", "PB虚高", "流动比率极低"],
-    riskScore: 92,
+    tags: ["连续亏损", "4月7日涨停", "换手率异常", "高振幅", "PB虚高", "流动比率极低"],
+    riskScore: 95,
     riskLevel: "high",
-    riskDesc: "高度危险标的。公司持续大幅亏损(-1.5亿扣非净利)，ROE为-17%，PB高达26倍但亏损中，换手率24%极度投机。连续涨停后风险巨大，典型的题材炒作，基本面完全不支持当前股价。"
+    riskDesc: "极度危险标的！大盘普跌背景下逆势涨停，纯属资金异动炒作。公司持续大幅亏损(-1.5亿扣非净利)，ROE为-17%，PB高达28倍但亏损中，流动比率仅0.56极度偏低。高位接盘者面临巨大回调风险，强烈建议规避。"
   },
   {
     code: "600552.SH", name: "凯盛科技", industry: "元器件", area: "安徽",
     market: "主板", actName: "国务院国资委",
-    price: 11.73, pctChg: -2.98, turnover: 2.08, volume: 232375,
-    peTTM: 86.11, pb: 2.61, totalMv: 1108024, dvTTM: 0.43,
+    price: 10.45, pctChg: -10.05, turnover: 2.41, volume: 254936,
+    peTTM: 77.3, pb: 2.47, totalMv: 988400, dvTTM: 0.43,
     eps: 0.12, roe: 2.72, roa: 2.31, debtRatio: 58.88, currentRatio: 1.18,
     profitDedt: 360,
-    netMoneyFlow: -14122,
+    netMoneyFlow: -40828,
     forecast: "预增 +25.91%~+81.42%，净利润13496~19446万",
     stHistory: "2008年撤销*ST，无当前风险",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["PE偏高", "资金流出", "业绩预增"],
-    riskScore: 35,
-    riskLevel: "mid",
-    riskDesc: "业绩预增，但PE偏高(86倍)，且资金持续流出。央企背景有一定安全边际。近期股价震荡，建议关注业绩兑现情况。"
+    tags: ["4月7日跌停", "PE偏高", "资金流出", "连续下跌"],
+    riskScore: 55,
+    riskLevel: "high",
+    riskDesc: "4月7日跌停，连续下跌压力较大，主力资金净流出4080万。虽然业绩预增，但市场整体下行环境下股价承压。央企背景有一定安全边际，关注跌停后是否能企稳，若继续破位则需谨慎。"
   },
   {
     code: "600131.SH", name: "国网信通", industry: "通信设备", area: "四川",
     market: "主板", actName: "国务院国资委",
-    price: 17.91, pctChg: -3.61, turnover: 1.62, volume: 351068,
-    peTTM: 31.65, pb: 3.48, totalMv: 2146254, dvTTM: 1.24,
+    price: 17.77, pctChg: -1.39, turnover: 0.68, volume: 146000,
+    peTTM: 32.79, pb: 3.42, totalMv: 2129500, dvTTM: 1.24,
     eps: 0.25, roe: 4.69, roa: 2.16, debtRatio: 48.82, currentRatio: 1.66,
     profitDedt: 29308,
     netMoneyFlow: -29838,
@@ -565,13 +565,13 @@ const stocks = [
     tags: ["资金流出", "连续下跌"],
     riskScore: 38,
     riskLevel: "mid",
-    riskDesc: "央企控股的通信设备股，基本面相对稳健，股息率1.24%尚可。但近期连续下跌，资金大幅流出3亿。需关注下跌是否反映基本面变化。"
+    riskDesc: "央企控股的通信设备股，今日跌幅相对较小(-1.39%)，防御性较好。PE约33倍相对合理，股息率1.24%尚可。资金持续流出3亿，需关注下跌是否反映基本面变化。相对组合内其他股票，抗跌性较强。"
   },
   {
     code: "000592.SZ", name: "平潭发展", industry: "林业", area: "福建",
     market: "主板", actName: "刘平山",
-    price: 12.57, pctChg: 4.58, turnover: 26.01, volume: 6231982,
-    peTTM: null, pb: 12.66, totalMv: 2428249, dvTTM: null,
+    price: 12.06, pctChg: 3.25, turnover: 11.78, volume: 2728000,
+    peTTM: 559.48, pb: 12.15, totalMv: 2330000, dvTTM: null,
     eps: 0.012, roe: 1.10, roa: 1.34, debtRatio: 43.45, currentRatio: 1.84,
     profitDedt: 2166,
     netMoneyFlow: -274926,
@@ -579,16 +579,16 @@ const stocks = [
     stHistory: "2009年撤销ST，历史有*ST记录",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["连续亏损", "PE亏损", "换手率极端", "PB虚高", "资金大幅流出", "历史ST"],
+    tags: ["连续亏损", "PE极高", "大盘跌日逆势上涨", "换手率高", "PB虚高", "历史ST"],
     riskScore: 88,
     riskLevel: "high",
-    riskDesc: "严重风险。公司连年亏损，PE为负值无法计算，换手率26%极端投机。虽然叠加平潭封关运作概念近期大涨，但基本面极差(年亏超亿)，资金大幅流出27.5亿(主力在出货)。概念退潮后下跌风险极大。"
+    riskDesc: "严重风险！大盘普跌日逆势上涨3.25%，高度可疑。PE高达559倍，基本面极差（续亏），历史有ST记录。资金累计大幅流出27.5亿，概念退潮风险极大。主力资金行为异常，高位接盘者面临极大亏损风险。"
   },
   {
     code: "002940.SZ", name: "昂利康", industry: "化学制药", area: "浙江",
     market: "主板", actName: "方南平",
-    price: 36.49, pctChg: 4.62, turnover: 23.98, volume: 1597775,
-    peTTM: 68.10, pb: 4.68, totalMv: 736106, dvTTM: 0.60,
+    price: 33.79, pctChg: 0.72, turnover: 12.10, volume: 744000,
+    peTTM: 63.06, pb: 4.28, totalMv: 681600, dvTTM: 0.60,
     eps: 0.25, roe: 3.23, roa: 3.42, debtRatio: 42.00, currentRatio: 1.72,
     profitDedt: 3992,
     netMoneyFlow: -20727,
@@ -596,16 +596,16 @@ const stocks = [
     stHistory: "无ST记录",
     holderTrade: "无近期增减持",
     unlockInfo: "无近期解禁",
-    tags: ["PE偏高", "换手率偏高", "资金流出", "业绩预增"],
+    tags: ["PE偏高", "换手率偏高", "资金流出", "业绩预增", "大盘跌日抗跌"],
     riskScore: 42,
     riskLevel: "mid",
-    riskDesc: "化学制药股，业绩预增37%~72%是亮点。但换手率24%偏高，短线投机氛围浓。PE 68倍仍偏高，资金持续流出2亿。需区分是业绩驱动还是短期炒作。"
+    riskDesc: "大盘大跌日仅小幅上涨0.72%，抗跌性尚可。业绩预增37%~72%是核心亮点。但换手率12%偏高，PE 63倍估值不低，资金持续流出2亿。需区分是业绩驱动还是短期炒作。"
   },
   {
     code: "002716.SZ", name: "湖南白银", industry: "小金属", area: "湖南",
     market: "主板", actName: "湖南省国资委",
-    price: 11.55, pctChg: -4.15, turnover: 6.88, volume: 1857845,
-    peTTM: 159.15, pb: 9.68, totalMv: 3260667, dvTTM: null,
+    price: 3.39, pctChg: -10.08, turnover: 3.15, volume: 8608000,
+    peTTM: null, pb: 2.25, totalMv: 957000, dvTTM: null,
     eps: 0.046, roe: 5.05, roa: 4.08, debtRatio: 46.87, currentRatio: 1.19,
     profitDedt: 7647,
     netMoneyFlow: -63317,
@@ -613,33 +613,33 @@ const stocks = [
     stHistory: "2021年撤销*ST(原ST金贵)，有ST历史",
     holderTrade: "长城资产2026.3减持1032万股；郴州国资2026.2减持1556万股",
     unlockInfo: "无近期解禁",
-    tags: ["PE极高", "股东减持", "资金流出", "ST历史", "业绩预增"],
-    riskScore: 65,
+    tags: ["4月7日跌停", "股东减持", "资金流出", "ST历史", "开盘即封跌停"],
+    riskScore: 78,
     riskLevel: "high",
-    riskDesc: "有ST历史(*ST金贵→湖南白银)，股东持续减持(长城资产、郴州国资)，PE高达159倍。虽然业绩预增但白银价格波动大。资金大幅流出6.3亿，需高度警惕减持叠加出货风险。"
+    riskDesc: "4月7日开盘即封跌停，成交2.93亿元，全天跌停未打开。有ST历史（原*ST金贵），股东持续减持（长城资产、郴州国资）。虽然业绩预增但白银价格波动大，国际贸易摩擦进一步压制有色金属板块。需高度警惕。"
   },
   {
     code: "002149.SZ", name: "西部材料", industry: "小金属", area: "陕西",
     market: "主板", actName: "陕西省财政厅",
-    price: 49.15, pctChg: -1.82, turnover: 10.32, volume: 2506983,
-    peTTM: 269.05, pb: 8.37, totalMv: 2399573, dvTTM: 0.61,
+    price: 45.40, pctChg: -3.61, turnover: 10.01, volume: 2224000,
+    peTTM: 249.50, pb: 7.74, totalMv: 2210000, dvTTM: 0.61,
     eps: 0.28, roe: 4.70, roa: 3.03, debtRatio: 48.62, currentRatio: 1.44,
     profitDedt: 9953,
-    netMoneyFlow: 179133,
+    netMoneyFlow: -82000,
     forecast: "无近期业绩预告",
     stHistory: "无ST记录",
     holderTrade: "西安航天科技2026.1减持480万股",
     unlockInfo: "无近期解禁",
-    tags: ["PE极高", "股东减持", "资金大幅流入"],
-    riskScore: 45,
-    riskLevel: "mid",
-    riskDesc: "稀有金属材料龙头，PE高达269倍。好消息是资金大幅净流入17.9亿（唯一净流入的股票）。但西安航天科技1月减持480万股，需注意后续减持压力。估值极高，需要业绩持续高增长来消化。"
+    tags: ["PE极高", "股东减持", "4月7日大跌-3.61%"],
+    riskScore: 55,
+    riskLevel: "high",
+    riskDesc: "4月7日下跌3.61%，受国际贸易摩擦影响，稀有金属板块普跌。PE高达249倍估值极高。西安航天科技1月减持480万股，减持压力持续。换手率10%偏高，短期波动较大，资金出逃明显。"
   },
   {
     code: "002202.SZ", name: "金风科技", industry: "电气设备", area: "新疆",
     market: "主板", actName: "无实际控制人",
-    price: 24.01, pctChg: -5.55, turnover: 6.97, volume: 5765786,
-    peTTM: 36.55, pb: 2.34, totalMv: 10141317, dvTTM: 0.58,
+    price: 23.05, pctChg: -4.83, turnover: 4.99, volume: 3903000,
+    peTTM: 35.09, pb: 2.34, totalMv: 7752900, dvTTM: 0.58,
     eps: 0.41, roe: 4.72, roa: 1.96, debtRatio: 73.72, currentRatio: 1.04,
     profitDedt: 177697,
     netMoneyFlow: -395845,
@@ -650,13 +650,13 @@ const stocks = [
     tags: ["资金大幅流出", "连续大跌", "负债率过高", "股东减持", "无实控人"],
     riskScore: 72,
     riskLevel: "high",
-    riskDesc: "风电龙头近期遭遇重挫，连续大跌近15%。资金大幅流出39.6亿（最严重），三峡能源和新疆能源持续减持。资产负债率73.7%偏高，流动比率仅1.04接近警戒线。无实际控制人增加治理不确定性。行业周期下行压力明显。"
+    riskDesc: "风电龙头继续大跌，4月7日下跌4.83%，累计跌幅扩大。资金大幅流出39.6亿（最严重），三峡能源和新疆能源持续减持。资产负债率73.7%偏高，流动比率仅1.04接近警戒线。无实际控制人增加治理不确定性。行业周期下行压力明显。"
   },
   {
     code: "002837.SZ", name: "英维克", industry: "专用机械", area: "深圳",
     market: "主板", actName: "齐勇",
-    price: 82.77, pctChg: -5.06, turnover: 4.00, volume: 2852008,
-    peTTM: 161.99, pb: 24.40, totalMv: 8082953, dvTTM: 0.18,
+    price: 85.16, pctChg: 1.83, turnover: 2.50, volume: 1817000,
+    peTTM: 166.67, pb: 25.10, totalMv: 8316300, dvTTM: 0.18,
     eps: 0.48, roe: 13.37, roa: 7.52, debtRatio: 50.16, currentRatio: 1.76,
     profitDedt: 33421,
     netMoneyFlow: -141043,
@@ -664,10 +664,10 @@ const stocks = [
     stHistory: "无ST记录",
     holderTrade: "秉原旭投资2026.3减持204万股",
     unlockInfo: "无近期解禁",
-    tags: ["PE极高", "PB极高", "资金大幅流出", "连续下跌", "股东减持"],
-    riskScore: 70,
+    tags: ["PE极高", "PB极高", "资金大幅流出", "大盘跌日逆势上涨", "股东减持"],
+    riskScore: 68,
     riskLevel: "high",
-    riskDesc: "温控设备龙头，ROE 13.4%为组合中最高，基本面不差。但PE 162倍、PB 24倍估值极高，资金大幅流出14.1亿，连续下跌近12%。虽有AI算力散热概念支撑，但估值泡沫风险较大。"
+    riskDesc: "大盘大跌日逆势上涨1.83%，AI算力散热概念支撑。温控设备龙头，ROE 13.4%为组合中最高，基本面不差。但PE 167倍、PB 25倍估值极高，资金大幅流出14.1亿，股东秉原旭投资持续减持。估值泡沫风险较大，建议逢高减仓。"
   }
 ];
 
@@ -764,7 +764,7 @@ function renderStockGrid() {
         <div class="price-row">
           <span class="price" style="color:${s.pctChg >= 0 ? 'var(--red)' : 'var(--green)'}">${s.price.toFixed(2)}</span>
           <span class="change ${chgClass}">${chgText}</span>
-          <span style="font-size:12px;color:var(--text2);margin-left:auto">成交额 ${(s.volume/10000).toFixed(0)}万</span>
+          <span style="font-size:12px;color:var(--text2);margin-left:auto">成交额 ${s.volume >= 10000 ? (s.volume/10000).toFixed(2)+'亿' : s.volume.toFixed(0)+'万'}</span>
         </div>
         <div class="indicators">
           <div class="ind-item">
